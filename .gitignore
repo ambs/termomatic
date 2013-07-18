@@ -3,3 +3,4 @@ MYMETA.*
 pm_to_blib
 blib
 Makefile
+config.yml
