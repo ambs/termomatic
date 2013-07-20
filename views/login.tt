@@ -25,26 +25,71 @@
         <h3 class="form-signin-heading">Sign In</h3>
         <input name="user" type="text" class="input-block-level" placeholder="Email address"/>
         <input name="pass" type="password" class="input-block-level" placeholder="Password"/>
-        <button class="btn btn-primary pull-right" type="submit">Sign in</button>
+        <% IF failed_login %>
+        <div class="alert alert-error">
+          <a href="#" class="close" data-dismiss="alert">&times;</a>
+            Wrong password or not registered user.</div>
+        <% END %>
+        <div style="text-align: right">
+          <button class="btn btn-primary" type="submit">Sign In</button>
+        </div>
       </form>
+      <% IF failed_login %>
+      <div class="alert alert-info">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        Forgot your password? Just use the Sign-Up form.</div>
+      <% END %>
     </div>
 
     <div class="tab-pane fade in active" id="signup">
-      <form class="form-signin-inner">
+      <form id="signup-form"
+            class="form-signin-inner" method="POST" action="<% request.uri_base %>/register">
         <h3 class="form-signin-heading">Sign Up</h3>
-        <input name="user"  type="text"
+        <input name="user" type="email" required="1" 
                class="input-block-level" placeholder="Email address"/>
-        <input name="pass1" type="password"
-               class="input-block-level" placeholder="Password"/>
-        <input name="pass2" type="password"
-               class="input-block-level" placeholder="Retype Password"/>
         <label class="checkbox">
-          <input type="checkbox" value="remember-me"> I accept the <a href="#tos"
-                                            data-toggle="modal">Terms of Service</a>.
+          <input type="checkbox" name="itos"> I accept the <a href="#tos"
+                               data-toggle="modal">Terms of Service</a>.
         </label>
-        <button class="btn btn-primary pull-right" type="submit">Sign up</button>
+        <div style="text-align: right">
+          <button class="btn btn-primary" type="submit">Sign Up</button>
+        </div>
       </form>
+      <% IF failed_login %>
+      <div class="alert alert-info">
+        <a href="#" class="close" data-dismiss="alert">&times;</a>
+        To recover your password just enter your e-mail and check the Terms of 
+        Service checkbox.</div>
+      <% END %>
     </div>
+
+    <script>
+      $("#signup-form").validate({
+      errorPlacement: function(error, element) {
+      if (element.parent().is("label")) {
+             error.insertAfter(element.parent());
+          } else {
+             error.insertAfter(element);
+          }
+      },
+      rules: {
+          user: {
+              required: true,
+              email: true },
+          itos: {
+             required: true,
+             minvalue: 1,
+         },
+      },
+      messages: {
+         itos: "&nbsp;&#x21AA; You must agree with our terms of service.",
+         user: {
+            required: "&nbsp;&#x21AA; You must supply an e-mail address.",
+            email: "&nbsp;&#x21AA; The entered e-mail address is not valid.",
+         }
+      },
+      });
+    </script>
 
   </div>
 
