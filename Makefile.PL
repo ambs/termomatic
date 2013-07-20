@@ -17,9 +17,10 @@ WriteMakefile(
       : ()),
     PL_FILES            => {},
     PREREQ_PM => {
-        'Test::More' => 0,
-        'YAML'       => 0,
-        'Dancer2'     => 0.04,
+                  'Test::More' => 0,
+                  'YAML'       => 0,
+                  'Dancer2'     => '0.04',
+                  'Dancer2::Plugin::Deferred' => '0.004',
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Termomatic-*' },
