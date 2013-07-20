@@ -9,6 +9,7 @@
 
     <script src="<% request.uri_base %>/js/jquery.min.js"></script>
     <script src="<% request.uri_base %>/js/bootstrap.min.js"></script>
+    <script src="<% request.uri_base %>/js/jquery.validate.min.js"></script>
 
     <link href="<% request.uri_base %>/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="<% request.uri_base %>/css/bootstrap-responsive.min.css" rel="stylesheet"/>
