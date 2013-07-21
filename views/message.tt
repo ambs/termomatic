@@ -1,0 +1,21 @@
+
+<div class="form-signin">
+  <h3><% message.title %></h3>
+
+  <p><% message.text %></p>
+
+  <div style="text-align: right">
+    <a id="OK" class="btn btn-primary" href="<% request.uri_base %>/">OK</a>
+  </div>
+</div>
+
+<script type="text/javascript">
+    $( function() {
+        $(document).keydown(function (e) {
+            var code = e.keyCode || e.which;
+            if(code == 13) { 
+                document.location.href="<% request.uri_base %>/";
+            }
+        });});
+</script>
+  
