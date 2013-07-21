@@ -1,0 +1,31 @@
+
+<div class="form-signin">
+
+  <form class="form-signin-inner" id="password-set"
+        method="post" action="<% request.uri_base %>/register/save">
+    <h3 class="form-signin-heading">Set password</h3>
+    <p>Define your new password for the account: <tt><% username %></tt></p>
+    <input name="username" value="<% username %>" type="hidden"/>
+    <input name="passA" type="password" id="passA"
+           class="input-block-level" placeholder="Your Password"/>
+    <input name="passB" type="password" id="passB"
+           class="input-block-level" placeholder="Retype Your Password"/>
+    <div style="text-align: right">
+      <button class="btn btn-primary" type="submit">Done</button>
+    </div>
+  </form>
+
+  <script>
+    $("#password-set").validate( {
+        rules: {
+            passA: { required: true },
+            passB: { equalTo: "#passA" },
+        },
+        messages: {
+            passA: "&nbsp;&#x21AA; You must define a password.",
+            passB: "&nbsp;&#x21AA; Your passwords do not match.",
+        },
+    }
+                               );
+  </script>
+</div>
