@@ -22,6 +22,7 @@ WriteMakefile(
                   'Dancer2'     => '0.04',
                   'DBI'         => '0',
                   'Digest::SHA' => '0',
+                  'Dancer2::Plugin::Emailesque'  => '0.001',
                   'Dancer2::Plugin::Deferred' => '0.004',
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

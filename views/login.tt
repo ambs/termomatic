@@ -21,7 +21,7 @@
   <div id="loginTabContent" class="tab-content">
 
     <div class="tab-pane fade in active" id="signin">
-      <form class="form-signin-inner">
+      <form class="form-signin-inner" method="post" action="<% request.uri_base %>/login">
         <h3 class="form-signin-heading">Sign In</h3>
         <input name="user" type="text" class="input-block-level" placeholder="Email address"/>
         <input name="pass" type="password" class="input-block-level" placeholder="Password"/>

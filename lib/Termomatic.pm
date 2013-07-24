@@ -11,21 +11,49 @@ use DateTime::Format::MySQL;
 use DBI;
 use Digest::SHA qw'sha1_hex sha512_base64';
 
+use Dancer2::Plugin::Emailesque;
+
 our $VERSION = '0.1';
 
 get '/' => sub {
-    my $failed_login = param "failed_login" || 0;
+    if (session("username")) {
+        template 'index' => { title => 'Dashboard' };
+    }
+    else {
+        my $failed_login = param "failed_login" || 0;
 
-    template 'login' => {
-                         failed_login => $failed_login,
-                         title => 'Sign-in',
-                        };
+        template 'login' => {
+                             failed_login => $failed_login,
+                             title => 'Sign-in',
+                            };
+    }
 };
 
-post '/register' => sub {
-    my $database = quick_connect();
 
+## called when user tries to login
+post '/login' => sub {
+    redirect '/' unless defined(param('user')) && defined(param('pass'));
+
+    my $database = quick_connect();
+    my $password = sha512_base64(param('pass'));
+
+    my $sth = $database->prepare("SELECT password FROM user WHERE username = ?");
+    $sth->execute(param('user'));
+    my $record = $sth->fetchrow->hashref;
+    if ($password eq $record->{password}) {
+        session username => param('user');
+        return forward '/';
+    } else {
+        return forward '/', { failed_login => 1 };
+    }
+
+};
+
+## called when user registers
+post '/register' => sub {
     redirect '/' unless defined(param('user'));
+
+    my $database = quick_connect();
 
     # generate SHA1 a partir da data concatenada com o email
     my $digest = uc(sha1_hex(param("user") . scalar(localtime)));
@@ -36,6 +64,11 @@ post '/register' => sub {
     $sth->execute(param("user"), $digest);
 
     # enviar email com o SHA1 para confirmação
+    email {
+            to => param("user"),
+            subject => 'Activate your Term-o-Matic account',
+            message => 'Please access to '.request->uri_base."/register/validate/$digest to validate and define a new password for your Term-o-Matic account",
+           };
 
     template 'message' => {
       title => 'Register',
@@ -48,6 +81,7 @@ post '/register' => sub {
     };
 };
 
+## Called when the user needs to validate his account
 get '/register/validate/:sha' => sub {
     # verificar que o SHA existe e esta up-to-date (1 week)
     # solicitar passowrd e confirmacao de password
@@ -78,6 +112,7 @@ get '/register/validate/:sha' => sub {
       }
 };
 
+## Called after the user accesses with his SHA key and defines a new password.
 post '/register/save' => sub {
 
     redirect '/' unless defined(param("username")) &&
