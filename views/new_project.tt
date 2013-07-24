@@ -1,0 +1,63 @@
+
+<form>
+  <fieldset>
+    <legend>New Project</legend>
+
+    <p>
+      <label for="name">Project name</label>
+      <input type="text" id="name" placeholder="Your Project Name">
+    </p>
+
+    <p>
+      <label>Type of Project</label>
+      <label for="mono" style="display: inline">
+        <input type="radio" name="type" id="mono" value="mono" checked="checked"/>
+        &nbsp;monolingual
+      </label>    
+      &nbsp;    &nbsp;          
+      <label for="parallel" style="display: inline">
+        <input type="radio" name="type" id="parallel" value="parallel"/>
+        &nbsp;parallel
+      </label>    
+      &nbsp;    &nbsp;
+      <label for="comparable" style="display: inline">
+        <input type="radio" name="type" id="comparable" value="comparable"/>
+        &nbsp;comparable
+      </label>    
+    </p>
+
+    <p>
+      <label for="source">Source language</label>
+      <select name="source" id="source">
+        <option value="por">Portuguese</option>
+        <option value="eng">English</option>
+      </select> 
+    </p>
+    
+    <p id="targetlanguage">
+      <label for="target">Target language</label>
+      <select name="target" id="target">
+        <option value="por">Portuguese</option>
+        <option value="eng">English</option>
+      </select> 
+    </p>
+
+    <div>
+      <button class="btn btn-primary" type="submit">Create</button>
+    </div>
+    
+  </fieldset>
+</form>
+
+<script>
+  $( function() {
+      $('#targetlanguage').hide();
+      $("input[name='type']").change(function () {
+          if ($("input[name='type']:checked").val() == 'mono') {
+              $('#targetlanguage').hide();
+          } else {
+              $('#targetlanguage').show();
+          }
+      });
+  });
+</script>

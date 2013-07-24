@@ -29,6 +29,10 @@ get '/' => sub {
     }
 };
 
+get '/project/new' => sub {
+    template 'new_project' => { title => 'New Project' };
+};
+
 
 ## called when user tries to login
 post '/login' => sub {
