@@ -3,7 +3,7 @@ package Termomatic;
 use Template;
 
 use Dancer2 ':syntax';
-use Dancer2::Plugin::Deferred;
+## use Dancer2::Plugin::Deferred;
 
 use DateTime;
 use DateTime::Format::MySQL;
@@ -39,12 +39,12 @@ post '/login' => sub {
 
     my $sth = $database->prepare("SELECT password FROM user WHERE username = ?");
     $sth->execute(param('user'));
-    my $record = $sth->fetchrow->hashref;
+    my $record = $sth->fetchrow_hashref;
     if ($password eq $record->{password}) {
         session username => param('user');
-        return forward '/';
+        return redirect '/';
     } else {
-        return forward '/', { failed_login => 1 };
+        return forward '/', { failed_login => 1 },  { method => 'get' };
     }
 
 };
