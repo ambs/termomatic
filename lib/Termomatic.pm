@@ -12,6 +12,7 @@ use DBI;
 use Digest::SHA qw'sha1_hex sha512_base64';
 
 use Dancer2::Plugin::Emailesque;
+use Dancer2::Plugin::Database;
 
 our $VERSION = '0.1';
 
@@ -34,14 +35,19 @@ get '/project/new' => sub {
 };
 
 
+## called for logout
+get '/logout' => sub {
+    session username => undef;
+    redirect '/';
+};
+
 ## called when user tries to login
 post '/login' => sub {
     redirect '/' unless defined(param('user')) && defined(param('pass'));
 
-    my $database = quick_connect();
     my $password = sha512_base64(param('pass'));
 
-    my $sth = $database->prepare("SELECT password FROM user WHERE username = ?");
+    my $sth = database->prepare("SELECT password FROM user WHERE username = ?");
     $sth->execute(param('user'));
     my $record = $sth->fetchrow_hashref;
     if ($password eq $record->{password}) {
@@ -57,14 +63,12 @@ post '/login' => sub {
 post '/register' => sub {
     redirect '/' unless defined(param('user'));
 
-    my $database = quick_connect();
-
     # generate SHA1 a partir da data concatenada com o email
     my $digest = uc(sha1_hex(param("user") . scalar(localtime)));
 
     # guardar SHA1, email e timestamp na tabela de confirmações
     # remover outros registos que possam existir referentes ao mesmo email.
-    my $sth = $database->prepare("REPLACE INTO user_validate (username, digest) VALUES (?, ?);");
+    my $sth = database->prepare("REPLACE INTO user_validate (username, digest) VALUES (?, ?);");
     $sth->execute(param("user"), $digest);
 
     # enviar email com o SHA1 para confirmação
@@ -89,10 +93,9 @@ post '/register' => sub {
 get '/register/validate/:sha' => sub {
     # verificar que o SHA existe e esta up-to-date (1 week)
     # solicitar passowrd e confirmacao de password
-    my $database = quick_connect();
     my $sha = param('sha');
 
-    my $sth = $database->prepare("SELECT username, timestamp FROM user_validate WHERE digest = ?");
+    my $sth = database->prepare("SELECT username, timestamp FROM user_validate WHERE digest = ?");
     $sth->execute($sha);
 
     my $record = $sth->fetchrow_hashref;
@@ -122,10 +125,9 @@ post '/register/save' => sub {
     redirect '/' unless defined(param("username")) &&
       defined(param("passA")) && param("passA") eq param("passB");
 
-    my $database = quick_connect();
 
-    my $ins = $database->prepare("INSERT INTO user (username, password) VALUES (?,?)");
-    my $del = $database->prepare("DELETE FROM user_validate WHERE username = ?");
+    my $ins = database->prepare("INSERT INTO user (username, password) VALUES (?,?)");
+    my $del = database->prepare("DELETE FROM user_validate WHERE username = ?");
 
     $ins->execute(param("username"), sha512_base64(param("passA")));
     $del->execute(param("username"));
@@ -139,14 +141,14 @@ post '/register/save' => sub {
                         };
 };
 
-sub quick_connect {
-    my $database = "termomatica";
-    my $hostname = "per-fide.di.uminho.pt";
-    my $port = 3306;
-    my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
-    my $dbh = DBI->connect($dsn, 'termomatic', 'termomatic');
-    die "Can't connect to database" unless $dbh;
-    return $dbh;
-}
+# sub quick_connect {
+#     my $database = "termomatica";
+#     my $hostname = "per-fide.di.uminho.pt";
+#     my $port = 3306;
+#     my $dsn = "DBI:mysql:database=$database;host=$hostname;port=$port";
+#     my $dbh = DBI->connect($dsn, 'termomatic', 'termomatic');
+#     die "Can't connect to database" unless $dbh;
+#     return $dbh;
+# }
 
 true;

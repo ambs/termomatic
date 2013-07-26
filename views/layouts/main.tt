@@ -47,7 +47,7 @@
               </li>
 
               <!-- Sign out -->
-              <li><a title="Sign-Out" href="#"><i style="vertical-align: middle" class="icon-off icon-white"></i></a></li>
+              <li><a title="Sign-Out" href="<% request.uri_base %>/logout"><i style="vertical-align: middle" class="icon-off icon-white"></i></a></li>
             </ul>
           </div><!--/.nav-collapse -->
           <% END %>

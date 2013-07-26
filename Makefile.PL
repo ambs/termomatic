@@ -24,6 +24,7 @@ WriteMakefile(
                   'Digest::SHA' => '0',
                   'Dancer2::Plugin::Emailesque'  => '0.001',
                   'Dancer2::Plugin::Deferred' => '0.004',
+                  'Dancer2::Plugin::Database' => '0',
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Termomatic-*' },
