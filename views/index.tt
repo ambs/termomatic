@@ -1,8 +1,8 @@
 <h2>Welcome!</h2>
 
 <% IF projects %>
+<h4>My Projects</h4>
 <table class="table table-striped">
-  <caption>My Projects</caption>
   <thead>
     <tr>
       <th>Name</th><th>Type</th><th>Languages</th>
@@ -11,7 +11,7 @@
   <tbody>
     <% FOREACH p IN projects %>
        <tr>
-         <td><% p.name %></td>
+         <td><% p.title %></td>
          <td><% p.type %></td>
          <td><% p.source %><% IF p.target %> | <% p.target %><% END %></td>
        </tr>

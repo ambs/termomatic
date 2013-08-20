@@ -18,7 +18,10 @@ our $VERSION = '0.1';
 
 get '/' => sub {
     if (session("username")) {
-        template 'index' => { title => 'Dashboard' };
+        template 'index' => {
+                             title => 'Dashboard',
+                             projects => get_projects(session('user_id')),
+                            };
     }
     else {
         my $failed_login = param "failed_login" || 0;
@@ -173,6 +176,11 @@ sub available_languages {
     my $sth = database->prepare("SELECT code, name FROM language;");
     $sth->execute();
     return $sth->fetchall_hashref('code');
+}
+
+sub get_projects {
+    my $user_id = shift;
+    return [ database->quick_select( project => { user_id => $user_id } ) ];
 }
 
 true;
