@@ -2,7 +2,7 @@ package Termomatic;
 
 use Template;
 
-use Dancer2 ':syntax';
+use Dancer2;
 ## use Dancer2::Plugin::Deferred;
 
 use DateTime;
@@ -31,7 +31,24 @@ get '/' => sub {
 };
 
 get '/project/new' => sub {
-    template 'new_project' => { title => 'New Project' };
+    redirect "/" unless session("username");
+    template 'new_project' => {
+                               title => 'New Project',
+                               languages => available_languages(),
+                              };
+};
+
+post '/project/save' => sub {
+    redirect "/" unless session("username");
+
+
+    my $target = param("type") eq 'monolingual' ? undef : param("target");
+    database->quick_insert( project => { user_id => session('user_id'),
+                                         type    => param('type'),
+                                         title   => param('name'),
+                                         source  => param('source'),
+                                         target  => $target });
+    forward '/', { }, { method => 'get' };
 };
 
 
@@ -47,11 +64,12 @@ post '/login' => sub {
 
     my $password = sha512_base64(param('pass'));
 
-    my $sth = database->prepare("SELECT password FROM user WHERE username = ?");
+    my $sth = database->prepare("SELECT password, user_id FROM user WHERE username = ?");
     $sth->execute(param('user'));
     my $record = $sth->fetchrow_hashref;
     if ($password eq $record->{password}) {
         session username => param('user');
+        session user_id  => $record->{user_id};
         return redirect '/';
     } else {
         return forward '/', { failed_login => 1 },  { method => 'get' };
@@ -150,5 +168,11 @@ post '/register/save' => sub {
 #     die "Can't connect to database" unless $dbh;
 #     return $dbh;
 # }
+
+sub available_languages {
+    my $sth = database->prepare("SELECT code, name FROM language;");
+    $sth->execute();
+    return $sth->fetchall_hashref('code');
+}
 
 true;

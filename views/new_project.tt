@@ -1,17 +1,17 @@
 
-<form>
+<form action="/project/save" method="POST">
   <fieldset>
     <legend>New Project</legend>
 
     <p>
       <label for="name">Project name</label>
-      <input type="text" id="name" placeholder="Your Project Name">
+      <input type="text" name="name" id="name" placeholder="Your Project Name">
     </p>
 
     <p>
       <label>Type of Project</label>
       <label for="mono" style="display: inline">
-        <input type="radio" name="type" id="mono" value="mono" checked="checked"/>
+        <input type="radio" name="type" id="mono" value="monolingual" checked="checked"/>
         &nbsp;monolingual
       </label>    
       &nbsp;    &nbsp;          
@@ -29,16 +29,18 @@
     <p>
       <label for="source">Source language</label>
       <select name="source" id="source">
-        <option value="por">Portuguese</option>
-        <option value="eng">English</option>
+        <% FOREACH lang IN languages %>
+           <option value="<% lang.key %>"><% lang.value.name %></option>
+        <% END %>
       </select> 
     </p>
     
     <p id="targetlanguage">
       <label for="target">Target language</label>
       <select name="target" id="target">
-        <option value="por">Portuguese</option>
-        <option value="eng">English</option>
+        <% FOREACH lang IN languages %>
+           <option value="<% lang.key %>"><% lang.value.name %></option>
+        <% END %>
       </select> 
     </p>
 
@@ -53,7 +55,7 @@
   $( function() {
       $('#targetlanguage').hide();
       $("input[name='type']").change(function () {
-          if ($("input[name='type']:checked").val() == 'mono') {
+          if ($("input[name='type']:checked").val() == 'monolingual') {
               $('#targetlanguage').hide();
           } else {
               $('#targetlanguage').show();
