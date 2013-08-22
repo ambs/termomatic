@@ -1,0 +1,28 @@
+
+<form enctype="multipart/form-data" action="/project/<% project.id %>/add" method="POST">
+
+  <fieldset>
+    <legend>Add Text</legend>
+
+    <p>
+      <label for="text">Paste your text:</label>
+      <textarea class="input-block-level" name="text" id="text" rows="10"></textarea>
+    </p>
+    <p>
+      <label for="upload">Or choose a text file to upload:</label>
+      <input name="upload" id="upload" type="file"/>
+    </p>
+
+    <div>
+      <button class="btn btn-primary" type="submit">Save</button>
+    </div>
+
+  </fieldset>
+
+</form>
+
+
+
+<div class="well well-small" style="margin-top: 60px;">
+  Current project: <% project.name %>
+</div>
