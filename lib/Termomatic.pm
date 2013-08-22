@@ -33,6 +33,10 @@ get '/' => sub {
     }
 };
 
+
+get '/project/:id/add' => sub {
+};
+
 get '/project/new' => sub {
     redirect "/" unless session("username");
     template 'new_project' => {
